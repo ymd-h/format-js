@@ -99,68 +99,87 @@ const format = (msg, ...args) => msg.replaceAll(
 );
 
 
-const DateExp = /(%+)(y|Y|m|d|H|I|p|M|S|s|f|T|w)/g;
+class DateLikeFormatter {
+    /**
+     * @template T
+     * @param {string} mark
+     * @param {Object.<string, function(T): string} routing
+     */
+    constructor(mark, routing){
+        if(typeof mark !== "string"){
+            new Error(`'mark' must be string, but ${typeof mark}`);
+        }
+        if(mark.length !== 1){
+            new Error(`'mark' must be single letter, but: ${mark}`);
+        }
+
+        /** Map<string, function(T): string> */
+        this.routing = new Map(Object.entries(routing));
+
+        const re = Array.from(this.routing.keys(),
+                              k => (k.length === 1) ? k : `(?:${k})`).join("|");
+        this.re = new RegExp(`(${mark}+)(${re})`, "g");
+    }
+
+    /**
+     * @param {string} msg
+     * @param {T} v
+     * @returns {string}
+     */
+    format(msg, v){
+        return msg.replaceAll(
+            this.re,
+            (_, esc, fmt) => {
+                const even = ((esc.length % 2) === 0);
+                esc = esc.substring(0, Math.floor(esc.length / 2));
+
+                if(even){
+                    return esc + fmt;
+                }
+
+                const f = this.routing.get(fmt);
+                if(f === undefined){
+                    throw new Error(`Unknown Format: ${fmt}`);
+                }
+
+                return f(v);
+            });
+    }
+};
+
+const DefaultDateFormatter = new DateLikeFormatter(
+    "%",
+    {
+        y: date => (date.getFullYear() % 100).toFixed(0).padStart(2, "0"),
+        Y: date => date.getFullYear().toFixed(0).padStart(4, "0"),
+        m: date => (date.getMonth() + 1).toFixed(0).padStart(2, "0"),
+        d: date => date.getDate().toFixed(0).padStart(2, "0"),
+        H: date => date.getHours().toFixed().padStart(2, "0"),
+        I: date => {
+            let I = date.getHours() % 12;
+            if(I === 0){
+                I = 12;
+            }
+            return I.toFixed(0).padStart(2, "0");
+        },
+        p: date => date.getHours() <= 12 ? "AM" : "PM",
+        M: date => date.getMinutes().toFixed(0).padStart(2, "0"),
+        S: date => date.getSeconds().toFixed(0).padStart(2, "0"),
+        s: date => (date.getTime() / 1000).toFixed(0),
+        f: date => date.getMilliseconds().toFixed(0).padStart(3, "0"),
+        T: date => (date.getHours().toFixed(0).padStart(2, "0") + ":" +
+                    date.getMinutes().toFixed(0).padStart(2, "0") + ":" +
+                    date.getSeconds().toFixed(0).padStart(2, "0")),
+        w: date => date.getDay(),
+    },
+);
+
 
 /**
  * @param {string} msg
  * @param {Date} date
  * @returns {string}
  */
-const format_date = (msg, date) => msg.replaceAll(
-    DateExp,
-    (...[
-        , // match
-        esc,
-        fmt,
-        , // offset
-        , // string
-        , // group
-    ]) => {
-        if((esc.length % 2) === 0){
-            return esc.substring(0, esc.length / 2) + fmt;
-        }
-
-        let v = esc.substring(0, Math.floor(esc.length / 2));
-
-        switch(fmt){
-        case "y":
-            return v + (date.getFullYear() % 100).toFixed(0).padStart(2, "0");
-            break;
-        case "Y":
-            return v + date.getFullYear().toFixed(0).padStart(4, "0");
-        case "m":
-            return v + (date.getMonth() + 1).toFixed(0).padStart(2, "0");
-        case "d":
-            return v + date.getDate().toFixed(0).padStart(2, "0");
-        case "H":
-            return v + date.getHours().toFixed().padStart(2, "0");
-        case "I":
-            let I = date.getHours() % 12;
-            if(I === 0){
-                I = 12;
-            }
-            return v + I.toFixed(0).padStart(2, "0");
-        case "p":
-            return v + (date.getHours() <= 12 ? "AM" : "PM");
-        case "M":
-            return v + date.getMinutes().toFixed(0).padStart(2, "0");
-        case "S":
-            return v + date.getSeconds().toFixed(0).padStart(2, "0");
-        case "s":
-            return v + (date.getTime() / 1000).toFixed(0);
-        case "f":
-            return v + date.getMilliseconds().toFixed(0).padStart(3, "0");
-        case "T":
-            return v + (date.getHours().toFixed(0).padStart(2, "0") + ":" +
-                        date.getMinutes().toFixed(0).padStart(2, "0") + ":" +
-                        date.getSeconds().toFixed(0).padStart(2, "0"));
-        case "w":
-            return v + date.getDay();
-        default:
-            throw new Error(`Unknown Format: ${fmt}`);
-        }
-    },
-);
+const format_date = (msg, date) => DefaultDateFormatter.format(msg, date);
 
 export { format, format_date, format as default };
-
