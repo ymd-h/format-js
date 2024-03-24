@@ -136,7 +136,7 @@ f.format("%p", new Date(2024, 2, 24, 18, 44, 52)); // "p.m."
 |`%M`| 2 digit minute (`00` - `59`) |
 |`%S`| 2 digit second (`00` - `59`) |
 |`%f`| 3 digit microsecond (`000` - `999`) |
-|`%s`| Unix Time. Elapsed seconds from 1970/1/1 00:00:00 |
+|`%s`| Unix Time. Elapsed seconds from 1970-01-01 00:00:00 UTC |
 |`%T`| Same as `%H:%M:%S` |
 |`%w`| day of the week as number. Sunday is `0`. (`0` - `6`) |
 |`%%`| `%` (escaped) |
