@@ -148,6 +148,12 @@ const DefaultFStringFormatter = new FStringLikeFormatter(
  */
 const format = (msg, ...args) => DefaultFStringFormatter.format(msg, ...args);
 
+/**
+ * @param {Object.<string, function(*, number): string>?} handlers
+ * @param {Object.<string, function(string, number): string>?} align
+ * @returns {FStringLikeFormatter}
+ */
+const patch_default_format = (handlers, align) => DefaultFStringFormatter.patch(handlers, align);
 
 class DateLikeFormatter {
     /**
@@ -247,10 +253,18 @@ const DefaultDateFormatter = new DateLikeFormatter(
  */
 const format_date = (msg, date) => DefaultDateFormatter.format(msg, date);
 
+/**
+ * @param {Object.<string, function(Date): string>} patch
+ * @returns {DateLikeFormatter}
+ */
+const patch_default_format_date = (handlers) => DefaultDateFormatter.patch(handlers);
+
 export {
     format as default,
     format,
     format_date,
+    patch_default_format,
+    patch_default_format_date,
     FStringLikeFormatter,
     DateLikeFormatter,
 };
