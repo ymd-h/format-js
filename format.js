@@ -1,102 +1,133 @@
 /** @module format */
 
-/** @type {RegExp} */
-const ArgExp = /{(?<idx>\d+)(?::(?<align>[<^>])?(?<width>\d*)(?:\.(?<precision>\d+))?(?<fmt>[sbcdoxXeEfF%]))?}/g;
+const SPECIAL = ["^", "$", ".", "+"];
 
-/** @type {number} */
-const defaultPresicion = 6;
+/**
+ * @typedef {object} FStringOptions
+ * @property {number?} defaultPrecision
+ */
+
+class FStringLikeFormatter {
+    /**
+     * @param {Object.<string, function(*, number): string>} routing
+     * @param {Object.<string, function(string, number): string>} align
+     * @param {FStringOptions} options
+     */
+    constructor(routing, align, options){
+        options ??= {};
+
+        /** @type {number} */
+        this.precision = options.defaultPrecision ?? 6;
+
+        /** @type {Map<string, function(*, number): string>} */
+        this.routing = new Map(Object.entries(routing));
+
+        /** @type {Map<string, function(string, number): string>} */
+        this.align = new Map(Object.entries(align));
+
+        const fmt = Array.from(
+            this.routing.keys(),
+            k => SPECIAL.includes(k) ? `\\${k}` :
+                (k.length === 1) ? k :
+                `(?:${k})`,
+        ).join("|");
+
+        const a = Array.from(this.align.keys()).filter(k => k !== "").map(
+            aa => SPECIAL.includes(aa) ? `\\${aa}` :
+                (aa.length === 1) ? aa :
+                `(?:${aa})`,
+        ).join("|");
+
+
+        this.re = new RegExp(`{(?<idx>[0-9]+)(?::(?<align>(?:${a}))?(?<width>[0-9]*)(?:\\.(?<precision>[0-9]+))?(?<fmt>(?:${fmt})))?}`, "g");
+    }
+
+    /**
+     * @param {string} msg
+     * @param {*[]} args
+     * @returns {string}
+     */
+    format(msg, ...args){
+        return msg.replaceAll(
+            this.re,
+            (...[
+                , // match
+                , // idx
+                , // align
+                , // width
+                , // precision
+                , // fmt,
+                , // offset
+                , // string
+                { idx, align, width, precision, fmt },
+            ]) => {
+                idx = parseInt(idx);
+
+                const v = args[idx];
+                if(v === undefined){
+                    return "undefined";
+                }
+
+                if(fmt === undefined){
+                    return v.toString();
+                }
+
+                const f = this.routing.get(fmt);
+                if(f === undefined){
+                    throw new Error(`Unknown Format at ${idx}: ${fmt}`);
+                }
+
+                precision ??= this.precision;
+                let vv = f(v, precision);
+
+                if(width !== ""){
+                    width = parseInt(width);
+
+                    align ??= "";
+                    const g = this.align.get(align);
+                    if(g === undefined){
+                        throw new Error(`Unknown Align: ${align}`);
+                    }
+
+                    vv = g(vv, width);
+                }
+
+                return vv;
+            },
+        );
+    }
+};
+
+const DefaultFStringFormatter = new FStringLikeFormatter(
+    {
+        "s": (v, precision) => v.toString(),
+        "b": (v, precision) => Math.round(v).toString(2),
+        "c": (v, precision) => String.fromCodePoint(v),
+        "d": (v, precision) => v.toFixed(0),
+        "o": (v, precision) => Math.round(v).toString(8),
+        "x": (v, precision) => Math.round(v).toString(16),
+        "X": (v, precision) => Math.round(v).toString(16).toUpperCase(),
+        "e": (v, precision) => v.toExponential(precision),
+        "E": (v, precision) => v.toExponential(precision).toUpperCase(),
+        "f": (v, precision) => v.toFixed(precision),
+        "F": (v, precision) => v.toFixed(precision).toUpperCase(),
+        "%": (v, precision) => (v * 100).toFixed(precision),
+    },
+    {
+        "<": (v, width) => v.padEnd(width),
+        "^": (v, width) => v.padStart(Math.floor(width / 2)).padEnd(width),
+        ">": (v, width) => v.padStart(width),
+        "" : (v, width) => v.padStart(width),
+    },
+);
+
 
 /**
  * @param {string} msg
  * @param {*[]} args
+ * @returns {string}
  */
-const format = (msg, ...args) => msg.replaceAll(
-    ArgExp,
-    (...[
-        , // match
-        , // idx
-        , // align
-        , // width
-        , // precision
-        , // fmt,
-        , // offset
-        , // string
-        { idx, align, width, precision, fmt },
-    ]) => {
-        idx = parseInt(idx);
-        const v = args[idx];
-        if(v === undefined){
-            return "undefined";
-        }
-
-        if(fmt === undefined){
-            return v.toString();
-        }
-
-        let vv = null;
-        precision ??= defaultPresicion;
-
-        switch(fmt){
-        case "s":
-            vv = v.toString();
-            break;
-        case "b":
-            vv = Math.round(v).toString(2);
-            break;
-        case "c":
-            vv = String.fromCodePoint(v);
-            break;
-        case "d":
-            vv = v.toFixed(0);
-            break;
-        case "o":
-            vv = Math.round(v).toString(8);
-            break;
-        case "x":
-            vv = Math.round(v).toString(16);
-            break;
-        case "X":
-            vv = Math.round(v).toString(16).toUpperCase();
-            break;
-        case "e":
-            vv = v.toExponential(precision);
-            break;
-        case "E":
-            vv = v.toExponential(precision).toUpperCase();
-            break;
-        case "f":
-            vv = v.toFixed(precision);
-            break;
-        case "F":
-            vv = v.toFixed(precision).toUpperCase();
-            break;
-        case "%":
-            vv = (v * 100).toFixed(precision);
-            break;
-        default:
-            throw new Error(`Unknown Format at ${idx}: ${fmt}`);
-        }
-
-        if(width !== undefined){
-            width = parseInt(width);
-            switch(align){
-            case "<":
-                vv = vv.padEnd(width);
-                break;
-            case "^":
-                vv = vv.padStart(Math.floor(width / 2)).padEnd(width);
-                break;
-            case ">":
-                // pass
-            default:
-                vv = vv.padStart(width);
-                break;
-            }
-        }
-
-        return vv;
-    },
-);
+const format = (msg, ...args) => DefaultFStringFormatter.format(msg, ...args);
 
 
 class DateLikeFormatter {
