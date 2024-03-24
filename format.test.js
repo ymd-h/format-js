@@ -1,6 +1,11 @@
 import { expect, test } from "bun:test";
 
-import { format, format_date } from "./format.js";
+import {
+    format,
+    format_date,
+    patch_default_format,
+    FStringLikeFormatter,
+} from "./format.js";
 
 
 test.each([
@@ -25,6 +30,25 @@ test.each([
     [["{0:F}", 1/0], "INFINITY"],
     [["{0:F}", 0/0], "NAN"],
 ])("format(%p) -> '%s'", (args, expected) => expect(format(...args)).toBe(expected));
+
+test.each([
+    [[{"w": (v, p) => v.toFixed(p) + ` (${p})`}], ["{0:.2w}", 1.5], "1.50 (2)"],
+    [[{}, {"*": (v, w) => v.padStart(w, "*")}], ["{0:*3d}", 2], "**2"],
+])("format patch: %p, format(%p) -> %s", (patch, args, expected) => {
+    const f = patch_default_format(...patch);
+    expect(f.format(...args)).toBe(expected);
+});
+
+
+test.each([
+    [[{"t": (v, p) => {
+        const vv = v.toString();
+        return (vv.length >= p) ? vv.slice(0, p) : vv;
+    } }, {"": (v, w) => v }], ["{0:.2t}", 1000], "10"],
+])("custom format: %p, format(%p) -> %s", (config, args, expected) => {
+    const f = new FStringLikeFormatter(...config);
+    expect(f.format(...args)).toBe(expected);
+});
 
 
 test.each([
