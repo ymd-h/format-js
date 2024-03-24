@@ -1,7 +1,7 @@
 /** @module format */
 
 /** @type {RegExp} */
-const ArgExp = /{(?<idx>[0-9]+)(?::(?<align><|\^|>)?(?<width>[0-9]*)(?:\.(?<precision>[0-9]+))?(?<fmt>(?:s|b|c|d|o|x|X|e|E|f|F|%)))?}/g;
+const ArgExp = /{(?<idx>\d+)(?::(?<align>[<^>])?(?<width>\d*)(?:\.(?<precision>\d+))?(?<fmt>[sbcdoxXeEfF%]))?}/g;
 
 /** @type {number} */
 const defaultPresicion = 6;
