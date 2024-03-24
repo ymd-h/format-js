@@ -4,7 +4,9 @@ import {
     format,
     format_date,
     patch_default_format,
+    patch_default_format_date,
     FStringLikeFormatter,
+    DateLikeFormatter,
 } from "./format.js";
 
 
@@ -69,3 +71,28 @@ test.each([
     [["%T", new Date(2024, 3, 23, 13, 5, 2, 33)], "13:05:02"],
 ])("format_date(%p) -> '%s'",
    (args, expected) => expect(format_date(...args)).toBe(expected));
+
+
+test.each([
+    [
+        [{"p": d => d.getHours() < 12 ? "a.m." : "p.m."}],
+        ["%p", new Date(2023, 1, 10, 11)],
+        "a.m.",
+    ],
+    [
+        [{"Z": d => format_date("%Y-%m-%dT%H:%M:%S.%fZ", d)}],
+        ["%Z", new Date(2024, 2, 24, 22, 10, 32, 432)],
+        "2024-03-24T22:10:32.432Z",
+    ],
+])("patch date format: %p, format_date(%p) -> %s", (patch, args, expected) => {
+    const f = patch_default_format_date(...patch);
+    expect(f.format(...args)).toBe(expected);
+});
+
+
+test.each([
+    [[{"t": d => format_date("%Y%m%d", d)}], ["%t", new Date(2024, 3, 20)], "20240420"],
+])("custom date format: %p, format_date(%p) -> %s", (config, args, expected) => {
+    const f = new DateLikeFormatter(...config);
+    expect(f.format(...args)).toBe(expected);
+});
