@@ -233,7 +233,7 @@ const DefaultDateFormatter = new DateLikeFormatter(
             }
             return I.toFixed(0).padStart(2, "0");
         },
-        p: date => date.getHours() <= 12 ? "AM" : "PM",
+        p: date => date.getHours() < 12 ? "AM" : "PM",
         M: date => date.getMinutes().toFixed(0).padStart(2, "0"),
         S: date => date.getSeconds().toFixed(0).padStart(2, "0"),
         s: date => (date.getTime() / 1000).toFixed(0),
