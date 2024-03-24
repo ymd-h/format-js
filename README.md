@@ -35,9 +35,9 @@ const f = patch_default_format(
     }, // Patch for Align (optional)
 );
 
-f.format("{0:.2f}", 1); "1.00 (2)"
-f.format("{0:.6f}", 1.25); "1.000000 (6)"
-f.format("{0:*6.2f}", 1); "**1.00"
+f.format("{0:.2f}", 1); // "1.00 (2)"
+f.format("{0:.6f}", 1.25); // "1.000000 (6)"
+f.format("{0:*6.2f}", 1); // "**1.00"
 ```
 
 
@@ -66,7 +66,7 @@ f.format("My name is {0}.", "ymd-h");
 import { format_date } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
 
 format_date("%Y-%m-%d %H:%M:%S", new Date(2024, 2, 24, 18, 44, 52)); // "2024-03-24 18:44:52"
-format_date("%T", new Date(2024, 2, 24, 18, 44, 52)); "18:44:52"
+format_date("%T", new Date(2024, 2, 24, 18, 44, 52)); // "18:44:52"
 ```
 
 
