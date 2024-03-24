@@ -112,13 +112,14 @@ class DateLikeFormatter {
         if(mark.length !== 1){
             new Error(`'mark' must be single letter, but: ${mark}`);
         }
+        this.mark = mark;
 
         /** Map<string, function(T): string> */
         this.routing = new Map(Object.entries(routing));
 
         const re = Array.from(this.routing.keys(),
                               k => (k.length === 1) ? k : `(?:${k})`).join("|");
-        this.re = new RegExp(`(${mark}+)(${re})`, "g");
+        this.re = new RegExp(`(${this.mark}+)(${re})`, "g");
     }
 
     /**
@@ -144,6 +145,17 @@ class DateLikeFormatter {
 
                 return f(v);
             });
+    }
+
+    /**
+     * @param {Object.<string, function(T): string>} patch
+     * @returns {DateLikeFormatter}
+     */
+    patch(patch){
+        return new DateLikeFormatter(
+            this.mark,
+            {...Object.fromEntries(this.routing.entries()), ...patch},
+        )
     }
 };
 
