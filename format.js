@@ -194,4 +194,4 @@ const DefaultDateFormatter = new DateLikeFormatter(
  */
 const format_date = (msg, date) => DefaultDateFormatter.format(msg, date);
 
-export { format, format_date, format as default };
+export { format, format_date, format as default, DateLikeFormatter };
