@@ -143,7 +143,7 @@ class DateLikeFormatter {
                     throw new Error(`Unknown Format: ${fmt}`);
                 }
 
-                return f(v);
+                return esc + f(v);
             });
     }
 
