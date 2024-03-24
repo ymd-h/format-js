@@ -12,24 +12,24 @@ const SPECIAL = ["^", "$", ".", "+", "?", "*", "(", ")"];
 
 class FStringLikeFormatter {
     /**
-     * @param {Object.<string, function(*, number): string>} routing
+     * @param {Object.<string, function(*, number): string>} handlers
      * @param {Object.<string, function(string, number): string>} align
      * @param {FStringOptions} options
      */
-    constructor(routing, align, options){
+    constructor(handlers, align, options){
         options ??= {};
 
         /** @type {number} */
         this.precision = options.defaultPrecision ?? 6;
 
         /** @type {Map<string, function(*, number): string>} */
-        this.routing = new Map(Object.entries(routing));
+        this.handlers = new Map(Object.entries(handlers));
 
         /** @type {Map<string, function(string, number): string>} */
         this.align = new Map(Object.entries(align));
 
         const fmt = Array.from(
-            this.routing.keys(),
+            this.handlers.keys(),
             k => SPECIAL.includes(k) ? `\\${k}` :
                 (k.length === 1) ? k :
                 `(?:${k})`,
@@ -75,7 +75,7 @@ class FStringLikeFormatter {
                     return v.toString();
                 }
 
-                const f = this.routing.get(fmt);
+                const f = this.handlers.get(fmt);
                 if(f === undefined){
                     throw new Error(`Unknown Format at ${idx}: ${fmt}`);
                 }
@@ -136,10 +136,10 @@ const format = (msg, ...args) => DefaultFStringFormatter.format(msg, ...args);
 class DateLikeFormatter {
     /**
      * @template T
-     * @param {Object.<string, function(T): string} routing
+     * @param {Object.<string, function(T): string} handlers
      * @param {DateOptions?} options
      */
-    constructor(routing, options){
+    constructor(handlers, options){
         options ??= {};
 
         const mark = options.mark ?? "%";
@@ -153,9 +153,9 @@ class DateLikeFormatter {
         this.mark = mark;
 
         /** Map<string, function(T): string> */
-        this.routing = new Map(Object.entries(routing));
+        this.handlers = new Map(Object.entries(handlers));
 
-        const re = Array.from(this.routing.keys(),
+        const re = Array.from(this.handlers.keys(),
                               k => (k.length === 1) ? k : `(?:${k})`).join("|");
         this.re = new RegExp(`(${this.mark}+)(${re})`, "g");
     }
@@ -176,7 +176,7 @@ class DateLikeFormatter {
                     return esc + fmt;
                 }
 
-                const f = this.routing.get(fmt);
+                const f = this.handlers.get(fmt);
                 if(f === undefined){
                     throw new Error(`Unknown Format: ${fmt}`);
                 }
@@ -192,7 +192,7 @@ class DateLikeFormatter {
     patch(patch){
         return new DateLikeFormatter(
             this.mark,
-            {...Object.fromEntries(this.routing.entries()), ...patch},
+            {...Object.fromEntries(this.handlers.entries()), ...patch},
         )
     }
 };
