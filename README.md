@@ -119,7 +119,7 @@ f.format("%p", new Date(2024, 2, 24, 18, 44, 52)); // "p.m."
 |---|---|
 |`<`| align left |
 |`^`| align middle |
-|`>` / `` | align right (default) |
+|`>` / (empty) | align right (default) |
 
 
 ### 2.2 date like format
