@@ -128,9 +128,9 @@ const DefaultFStringFormatter = new FStringLikeFormatter(
         "X": (v, precision) => Math.round(v).toString(16).toUpperCase(),
         "e": (v, precision) => v.toExponential(precision),
         "E": (v, precision) => v.toExponential(precision).toUpperCase(),
-        "f": (v, precision) => v.toFixed(precision),
+        "f": (v, precision) => v.toFixed(precision).toLowerCase(),
         "F": (v, precision) => v.toFixed(precision).toUpperCase(),
-        "%": (v, precision) => (v * 100).toFixed(precision),
+        "%": (v, precision) => (v * 100).toFixed(precision) + "%",
     },
     {
         "<": (v, width) => v.padEnd(width),
