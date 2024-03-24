@@ -5,6 +5,9 @@ const SPECIAL = ["^", "$", ".", "+", "?", "*", "(", ")"];
 /**
  * @typedef {object} FStringOptions
  * @property {number?} defaultPrecision
+ *
+ * @typedef {object} DateOptions
+ * @property {string?} mark
  */
 
 class FStringLikeFormatter {
@@ -133,10 +136,14 @@ const format = (msg, ...args) => DefaultFStringFormatter.format(msg, ...args);
 class DateLikeFormatter {
     /**
      * @template T
-     * @param {string} mark
      * @param {Object.<string, function(T): string} routing
+     * @param {DateOptions?} options
      */
-    constructor(mark, routing){
+    constructor(routing, options){
+        options ??= {};
+
+        const mark = options.mark ?? "%";
+
         if(typeof mark !== "string"){
             new Error(`'mark' must be string, but ${typeof mark}`);
         }
@@ -191,7 +198,6 @@ class DateLikeFormatter {
 };
 
 const DefaultDateFormatter = new DateLikeFormatter(
-    "%",
     {
         y: date => (date.getFullYear() % 100).toFixed(0).padStart(2, "0"),
         Y: date => date.getFullYear().toFixed(0).padStart(4, "0"),
