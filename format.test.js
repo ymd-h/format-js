@@ -19,6 +19,7 @@ test.each([
     [["{0:<4d}", 1], "1   "],
     [["{0:^4d}", 1], " 1  "],
     [["{0:>4d}", 1], "   1"],
+    [["{0:.0%}", 0.23], "23%"],
 ])("format(%p) -> '%s'", (args, expected) => expect(format(...args)).toBe(expected));
 
 
