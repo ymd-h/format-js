@@ -225,7 +225,7 @@ const DefaultDateFormatter = new DateLikeFormatter(
         Y: date => date.getFullYear().toFixed(0).padStart(4, "0"),
         m: date => (date.getMonth() + 1).toFixed(0).padStart(2, "0"),
         d: date => date.getDate().toFixed(0).padStart(2, "0"),
-        H: date => date.getHours().toFixed().padStart(2, "0"),
+        H: date => date.getHours().toFixed(0).padStart(2, "0"),
         I: date => {
             let I = date.getHours() % 12;
             if(I === 0){
