@@ -191,8 +191,8 @@ class DateLikeFormatter {
      */
     patch(patch){
         return new DateLikeFormatter(
-            this.mark,
             {...Object.fromEntries(this.handlers.entries()), ...patch},
+            { mark: this.mark },
         )
     }
 };
