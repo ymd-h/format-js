@@ -110,9 +110,9 @@ f.format("%p", new Date(2024, 2, 24, 18, 44, 52)); // "p.m."
 |`X`| hexadecimal number. Use `A`-`F` for 10 to 15 |
 |`e`| scientific notation. Use `e` for exponent |
 |`E`| scientific notation. Use `E` for exponent |
-|`f`| fixed point notation. Use "nan" / "infinity" |
-|`F`| fixed point notation. Use "NAN" / "INFINITY" |
-|`%`| percentage. multuply 100, fixed notation follewed by "%" |
+|`f`| fixed point notation. Use `nan` / `infinity` |
+|`F`| fixed point notation. Use `NAN` / `INFINITY` |
+|`%`| percentage. multuply 100, fixed notation follewed by `%` |
 
 
 | align | description |
