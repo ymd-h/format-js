@@ -1,6 +1,6 @@
 /** @module format */
 
-const SPECIAL = ["^", "$", ".", "+"];
+const SPECIAL = ["^", "$", ".", "+", "?", "*", "(", ")"];
 
 /**
  * @typedef {object} FStringOptions
