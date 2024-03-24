@@ -99,6 +99,22 @@ class FStringLikeFormatter {
             },
         );
     }
+
+    /**
+     * @param {Object.<string, function(*, number): string>?} handlers
+     * @param {Object.<string, function(string, number): string>?} align
+     * @returns {FStringLikeFormatter}
+     */
+    patch(handlers, align){
+        handlers ??= {};
+        align ??= {};
+
+        return new FStringLikeFormatter(
+            { ...Object.fromEntries(this.handlers.entries()), ...handlers },
+            { ...Object.fromEntries(this.align.entries()), ...align },
+            { defaultPrecision: this.precision },
+        );
+    }
 };
 
 const DefaultFStringFormatter = new FStringLikeFormatter(
