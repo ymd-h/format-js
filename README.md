@@ -11,6 +11,8 @@ Both usage have default formatter and user customization.
 
 
 ### 1.1 f-String like format
+Pseudo Syntax: `{index[:[width][.precision]type]}`
+
 #### 1.1.1 Default Usage
 ```javascript
 import { format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
