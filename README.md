@@ -17,9 +17,9 @@ import { format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
 
 format("{0} + {1} = {2}", 1, 2, 1+2); // "1 + 2 = 3"
 format("Precision: {0:.2f}", 1.78); // "Precision: 1.78"
-format("Width: {0:4d}", 1); // "   1"
-format("Hex: {0:x}", 15); // "f"
-format("Align: {0:<4d}", 1); // "1   "
+format("Width: {0:4d}", 1); // "Width:   1"
+format("Hex: {0:x}", 15); // "Hex: f"
+format("Align: {0:<4d}", 1); // "Align: 1   "
 ```
 
 #### 1.1.2 Patch on Default
