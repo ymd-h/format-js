@@ -241,7 +241,7 @@ const DefaultDateFormatter = new DateLikeFormatter(
         T: date => (date.getHours().toFixed(0).padStart(2, "0") + ":" +
                     date.getMinutes().toFixed(0).padStart(2, "0") + ":" +
                     date.getSeconds().toFixed(0).padStart(2, "0")),
-        w: date => date.getDay(),
+        w: date => date.getDay().toFixed(0),
     },
 );
 
