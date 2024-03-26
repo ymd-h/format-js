@@ -11,7 +11,7 @@ Both usage have default formatter and user customization.
 
 
 ### 1.1 f-String like format
-Pseudo Syntax: `{index[:[width][.precision]type]}`
+Pseudo Syntax: `{index[:[[align]width][.precision]type]}`
 
 #### 1.1.1 Default Usage
 ```javascript
