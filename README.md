@@ -35,8 +35,8 @@ const f = patch_default_format(
     }, // Patch for Align (optional)
 );
 
-f.format("{0:.2f}", 1); // "1.00 (2)"
-f.format("{0:.6f}", 1.25); // "1.000000 (6)"
+f.format("{0:.2w}", 1); // "1.00 (2)"
+f.format("{0:.6w}", 1.25); // "1.000000 (6)"
 f.format("{0:*6.2f}", 1); // "**1.00"
 ```
 
