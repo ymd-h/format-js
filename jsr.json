@@ -6,7 +6,8 @@
         "include": [
             "LICENSE",
             "README.md",
-            "format.js"
+            "format.js",
+            "format.d.ts"
         ]
     }
 }

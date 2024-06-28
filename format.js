@@ -1,4 +1,5 @@
 /** @module format */
+/// <reference types="./format.d.ts" />
 
 const SPECIAL = ["^", "$", ".", "+", "?", "*", "(", ")"];
 
