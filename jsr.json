@@ -1,0 +1,12 @@
+{
+    "name": "@ymd-h/format-js",
+    "version": "1.0.0",
+    "exports": "./format.js",
+    "publish": {
+        "include": [
+            "LICENSE",
+            "README.md",
+            "format.js"
+        ]
+    }
+}
