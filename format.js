@@ -1,22 +1,8 @@
-/** @module format */
 /// <reference types="./format.d.ts" />
 
 const SPECIAL = ["^", "$", ".", "+", "?", "*", "(", ")"];
 
-/**
- * @typedef {object} FStringOptions
- * @property {number?} defaultPrecision
- *
- * @typedef {object} DateOptions
- * @property {string?} mark
- */
-
 class FStringLikeFormatter {
-    /**
-     * @param {Object.<string, function(*, number): string>} handlers
-     * @param {Object.<string, function(string, number): string>} align
-     * @param {FStringOptions} options
-     */
     constructor(handlers, align, options){
         options ??= {};
 
@@ -46,11 +32,6 @@ class FStringLikeFormatter {
         this.re = new RegExp(`{(?<idx>[0-9]+)(?::(?<align>(?:${a}))?(?<width>[0-9]*)(?:\\.(?<precision>[0-9]+))?(?<fmt>(?:${fmt})))?}`, "g");
     }
 
-    /**
-     * @param {string} msg
-     * @param {*[]} args
-     * @returns {string}
-     */
     format(msg, ...args){
         return msg.replaceAll(
             this.re,
@@ -101,11 +82,6 @@ class FStringLikeFormatter {
         );
     }
 
-    /**
-     * @param {Object.<string, function(*, number): string>?} handlers
-     * @param {Object.<string, function(string, number): string>?} align
-     * @returns {FStringLikeFormatter}
-     */
     patch(handlers, align){
         handlers ??= {};
         align ??= {};
@@ -142,26 +118,11 @@ const DefaultFStringFormatter = new FStringLikeFormatter(
 );
 
 
-/**
- * @param {string} msg
- * @param {*[]} args
- * @returns {string}
- */
 const format = (msg, ...args) => DefaultFStringFormatter.format(msg, ...args);
 
-/**
- * @param {Object.<string, function(*, number): string>?} handlers
- * @param {Object.<string, function(string, number): string>?} align
- * @returns {FStringLikeFormatter}
- */
 const patch_default_format = (handlers, align) => DefaultFStringFormatter.patch(handlers, align);
 
 class DateLikeFormatter {
-    /**
-     * @template T
-     * @param {Object.<string, function(T): string} handlers
-     * @param {DateOptions?} options
-     */
     constructor(handlers, options){
         options ??= {};
 
@@ -175,7 +136,7 @@ class DateLikeFormatter {
         }
         this.mark = mark;
 
-        /** Map<string, function(T): string> */
+        /** @type {Map<string, function(T): string>} */
         this.handlers = new Map(Object.entries(handlers));
 
         const re = Array.from(this.handlers.keys(),
@@ -183,11 +144,6 @@ class DateLikeFormatter {
         this.re = new RegExp(`(${this.mark}+)(${re})`, "g");
     }
 
-    /**
-     * @param {string} msg
-     * @param {T} v
-     * @returns {string}
-     */
     format(msg, v){
         return msg.replaceAll(
             this.re,
@@ -208,13 +164,9 @@ class DateLikeFormatter {
             });
     }
 
-    /**
-     * @param {Object.<string, function(T): string>} patch
-     * @returns {DateLikeFormatter}
-     */
-    patch(patch){
+    patch(handlers){
         return new DateLikeFormatter(
-            {...Object.fromEntries(this.handlers.entries()), ...patch},
+            {...Object.fromEntries(this.handlers.entries()), ...handlers},
             { mark: this.mark },
         )
     }
@@ -246,18 +198,8 @@ const DefaultDateFormatter = new DateLikeFormatter(
     },
 );
 
-
-/**
- * @param {string} msg
- * @param {Date} date
- * @returns {string}
- */
 const format_date = (msg, date) => DefaultDateFormatter.format(msg, date);
 
-/**
- * @param {Object.<string, function(Date): string>} patch
- * @returns {DateLikeFormatter}
- */
 const patch_default_format_date = (handlers) => DefaultDateFormatter.patch(handlers);
 
 export {
