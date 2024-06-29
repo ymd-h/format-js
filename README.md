@@ -1,5 +1,7 @@
 # format.js
 
+![JSR Version](https://img.shields.io/jsr/v/%40ymd-h/format-js)
+
 
 ## 1. Usage
 format.js provides two usage;
