@@ -17,7 +17,7 @@ Pseudo Syntax: `{index[:[[align]width][.precision]type]}`
 
 #### 1.1.1 Default Usage
 ```javascript
-import { format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 format("{0} + {1} = {2}", 1, 2, 1+2); // "1 + 2 = 3"
 format("Precision: {0:.2f}", 1.78); // "Precision: 1.78"
@@ -28,7 +28,7 @@ format("Align: {0:<4d}", 1); // "Align: 1   "
 
 #### 1.1.2 Patch on Default
 ```javascript
-import { patch_default_format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { patch_default_format } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 const f = patch_default_format(
     { // key: (value: *, precision: number) => formatted_string
@@ -47,7 +47,7 @@ f.format("{0:*6.2f}", 1); // "**1.00"
 
 #### 1.1.3 Custom Formatter from scratch
 ```javascript
-import { FStringLikeFormatter } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { FStringLikeFormatter } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 const f = new FStringLikeFormatter(
     {
@@ -67,7 +67,7 @@ f.format("My name is {0}.", "ymd-h");
 
 #### 1.2.1 Default Usage
 ```javascript
-import { format_date } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { format_date } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 format_date("%Y-%m-%d %H:%M:%S", new Date(2024, 2, 24, 18, 44, 52)); // "2024-03-24 18:44:52"
 format_date("%T", new Date(2024, 2, 24, 18, 44, 52)); // "18:44:52"
@@ -76,7 +76,7 @@ format_date("%T", new Date(2024, 2, 24, 18, 44, 52)); // "18:44:52"
 
 #### 1.2.2 Patch on Default
 ```javascript
-import { patch_default_formatformat_date } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { patch_default_formatformat_date } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 const f = patch_default_formatformat_date({
     "p": d => (d.getHours() < 12) ? "a.m." : "p.m.",
@@ -88,7 +88,7 @@ f.format("%p", new Date(2024, 2, 24, 18, 44, 52)); // "p.m."
 
 #### 1.2.3 Custom Formatter from scratch
 ```javascript
-import { DateLikeFormatter } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js/format.js";
+import { DateLikeFormatter } from "https://cdn.jsdelivr.net/gh/ymd-h/format-js@v1/format.js";
 
 const f = new DateLikeFormatter({
     "p": d => (d.getHours() < 12) ? "a.m." : "p.m.",
