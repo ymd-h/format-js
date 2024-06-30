@@ -84,7 +84,7 @@ export declare class FStringLikeFormatter {
      * @param {...any} args Arguments to be assigned to template
      * @returns {string} Formatted string
      */
-    format(msg: string, ...args: any): string;
+    format(msg: string, ...args: any[]): string;
 
     /**
      * Create a new `FStringLikeFormatter` with patch
@@ -177,7 +177,7 @@ declare var DefaultDateFormatter: DateLikeFormatter<Date>;
  * @param {...any} args Arguments to be assigned to template
  * @returns {string} Formatted string
  */
-export declare function format(msg: string, ...args: any): string;
+export declare function format(msg: string, ...args: any[]): string;
 
 /**
  * Format string with date command like syntax
