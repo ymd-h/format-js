@@ -1,6 +1,6 @@
 {
     "name": "@ymd-h/format-js",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "exports": "./format.js",
     "publish": {
         "include": [
